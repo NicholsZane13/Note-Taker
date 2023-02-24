@@ -1,18 +1,18 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const idRan = require('./helpers/randomId');
+const randomId = require('./helpers/randomId');
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
 
-// Middleware that parses JSON and urlencoded from data
+// Middleware for parsing JSON and urlencoded form data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
 
-//Reading the file and passes note data
+//Route for reading file and parsing the notes data
 app.get('/api/notes', (req, res) => {
   fs.readFile('./db/db.json', 'utf8', (err, data) => {
     if (err) {
@@ -48,7 +48,7 @@ app.delete('/api/notes/:id', (req, res) => {
   res.sendFile(path.join(__dirname, './db/db.json'));
 });
 
-//Route that creates a new note
+//Route for creating a new note
 app.post('/api/notes', (req, res) => {
   console.info(`${req.method} request received to add a note`);
 
@@ -58,7 +58,7 @@ app.post('/api/notes', (req, res) => {
     const newNote = {
       title,
       text,
-      id: idRan(),
+      id: randomId(),
     };
 
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
@@ -92,6 +92,10 @@ app.post('/api/notes', (req, res) => {
   }
 });
 
+app.get('/notes', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/notes.html'));
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/index.html'));
 });
@@ -99,7 +103,3 @@ app.get('*', (req, res) => {
 app.listen(PORT, () =>
   console.log(`Listening at this location http://localhost:${PORT}`)
 );
-
-app.get('/notes', (req, res) => {
-  res.sendFile(path.join(__dirname, '/public/notes.html'));
-});
