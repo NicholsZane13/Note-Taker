@@ -7,12 +7,12 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
-// Middleware for parsing JSON and urlencoded form data
+//JSON and urlencoded form data being parsed by middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
 
-//Route for reading file and parsing the notes data
+//reading file and parsing note data
 app.get('/api/notes', (req, res) => {
   fs.readFile('./db/db.json', 'utf8', (err, data) => {
     if (err) {
@@ -23,7 +23,7 @@ app.get('/api/notes', (req, res) => {
   });
 });
 
-//Route for deleting notes. Reads the file, parses the data and finds the note with right ID and then rewrites the file.
+//deleting notes. then reads the file, parses the data and gets the note with right ID and then rewrites the file.
 app.delete('/api/notes/:id', (req, res) => {
   const deleteNoteId = req.params.id;
 
@@ -48,7 +48,7 @@ app.delete('/api/notes/:id', (req, res) => {
   res.sendFile(path.join(__dirname, './db/db.json'));
 });
 
-//Route for creating a new note
+//new note being created
 app.post('/api/notes', (req, res) => {
   console.info(`${req.method} request received to add a note`);
 
@@ -92,12 +92,12 @@ app.post('/api/notes', (req, res) => {
   }
 });
 
-app.get('/notes', (req, res) => {
-  res.sendFile(path.join(__dirname, '/public/notes.html'));
-});
-
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/index.html'));
+});
+
+app.get('/notes', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/notes.html'));
 });
 
 app.listen(PORT, () =>
